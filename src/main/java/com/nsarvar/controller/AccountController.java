@@ -24,7 +24,9 @@ public class AccountController {
     }
 
     @RequestMapping("/webapi/accounts/{id}")
-    public Account getAccount(@PathVariable String id){
+    public Account getAccount(@PathVariable String id) {
+
+
         return accountService.getById(id);
     }
 

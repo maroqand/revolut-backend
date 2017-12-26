@@ -1,8 +1,10 @@
 package com.nsarvar.service;
 
 import com.nsarvar.model.Account;
+import com.nsarvar.exception.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,7 +27,11 @@ public class AccountService {
     }
 
     public Account getById(String id){
-        return accounts.stream().filter(account -> account.getAccountID().equals(id)).findFirst().get();
+        Account account = accounts.stream().filter(a -> a.getAccountID().equals(id)).findFirst().orElse(null);
+        if(account == null){
+            throw new EntityNotFoundException("Account not found");
+        }
+        return account;
     }
 
     public void addAccount(Account account){
@@ -40,10 +46,12 @@ public class AccountService {
                 return;
             }
         }
+        throw new EntityNotFoundException("Account not found");
     }
 
-    public void deleteAccount(String id){
-        accounts.removeIf(account -> account.getAccountID().equals(id));
+    public void deleteAccount(String id) {
+        if(!accounts.removeIf(account -> account.getAccountID().equals(id))){
+            throw new EntityNotFoundException("Account not found");
+        }
     }
-
 }
